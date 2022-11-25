@@ -1,137 +1,7 @@
 <?php
-// --Credit--
-// Medium: https://medium.com/@sirateek
-// Github: https://github.com/maiyarapkung
-// Develop with /\/\ By: Siratee K.
-//              \  /
-//               \/
-
+require('connect.php');
 
 $LINEData = file_get_contents('php://input');
-$flexDataJson = '{
-  type: "bubble",
-  body: {
-    type: "box",
-    layout: "vertical",
-    contents: [
-      {
-        type: "text",
-        text: `${company}`,
-        color: "#1DB446",
-        size: "md",
-        weight: "bold",
-      },
-      {
-        type: "text",
-        text: `ตำแหน่ง : ${department}`,
-        weight: "bold",
-        size: "xl",
-        margin: "md",
-      },
-      {
-        type: "text",
-        text: `คุณ ${name}`,
-        size: "sm",
-        color: "#555555",
-        wrap: true,
-        margin: "sm",
-      },
-      {
-        type: "text",
-        text: `รหัสพนักงาน : ${id}`,
-        size: "sm",
-        color: "#555555",
-        wrap: true,
-        margin: "sm",
-      },
-      {
-        type: "separator",
-        margin: "xxl",
-      },
-      {
-        type: "box",
-        layout: "vertical",
-        margin: "xxl",
-        spacing: "sm",
-        contents: [
-          {
-            type: "box",
-            layout: "horizontal",
-            contents: [
-              {
-                type: "text",
-                text: "เงินเดือน",
-                size: "md",
-                color: "#777777",
-                flex: 0,
-              },
-              {
-                type: "text",
-                text: `${numberToStringCurrency(salary)} บาท`,
-                size: "md",
-                color: "#777777",
-                align: "end",
-              },
-            ],
-          },
-          {
-            type: "box",
-            layout: "horizontal",
-            contents: [
-              {
-                type: "text",
-                text: "โอที",
-                size: "md",
-                color: "#777777",
-                flex: 0,
-              },
-              {
-                type: "text",
-                text: `${numberToStringCurrency(ot)} บาท`,
-                size: "md",
-                color: "#777777",
-                align: "end",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        type: "separator",
-        margin: "xxl",
-      },
-      {
-        type: "box",
-        layout: "horizontal",
-        margin: "lg",
-        contents: [
-          {
-            type: "text",
-            text: "รวมเป็นเงิน",
-            size: "lg",
-            color: "#555555",
-            flex: 0,
-            weight: "bold",
-          },
-          {
-            type: "text",
-            text: `${numberToStringCurrency(total)} บาท`,
-            color: "#555555",
-            size: "lg",
-            align: "end",
-            weight: "bold",
-            style: "normal",
-          },
-        ],
-      },
-    ],
-  },
-  styles: {
-    footer: {
-      separator: true,
-    },
-  },
-};';
 $jsonData = json_decode($LINEData, true);
 
 $replyToken = $jsonData["events"][0]["replyToken"];
@@ -139,36 +9,30 @@ $userID = $jsonData["events"][0]["source"]["userId"];
 $text = $jsonData["events"][0]["message"]["text"];
 $timestamp = $jsonData["events"][0]["timestamp"];
 
-// $flexDataJsonDeCode = ["contents"]["contents"][0]["header"]["contents"][0]["text"];
-
-// $servername = "https://d588-184-82-148-66.ap.ngrok.io/phpmyadmin/";
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "LINE";
-$mysql = new mysqli($servername, $username, $password, $dbname);
-mysqli_set_charset($mysql, "utf8");
-
-if ($mysql->connect_error) {
-  $errorcode = $mysql->connect_error;
-  print("MySQL(Connection)> " . $errorcode);
-}
-
-function sendMessage($replyJson, $sendInfo)
+function sendMessage($encodeJson, $lineData)
 {
-  $ch = curl_init($sendInfo["URL"]);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-  curl_setopt($ch, CURLOPT_POST, true);
-  curl_setopt(
-    $ch,
-    CURLOPT_HTTPHEADER,
+  $ch = curl_init();
+  curl_setopt_array($ch, array(
+    CURLOPT_URL => $lineData["URL"],
+    CURLINFO_HEADER_OUT => true,
+    CURLOPT_POST => true,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "POST",
+    CURLOPT_POSTFIELDS => $encodeJson,
+    CURLOPT_HTTPHEADER =>
     array(
-      'Content-Type: application/json',
-      'Authorization: Bearer ' . $sendInfo["AccessToken"]
-    )
-  );
-  curl_setopt($ch, CURLOPT_POSTFIELDS, $replyJson);
+      // 'Content-Type: application/json',
+      // 'Authorization: Bearer ' . $lineData["AccessToken"]
+      "authorization: Bearer " . $lineData['AccessToken'],
+      "cache-control: no-cache",
+      "content-type: application/json; charset=UTF-8",
+    ),
+    
+  ));
   $result = curl_exec($ch);
   curl_close($ch);
   return $result;
@@ -212,7 +76,130 @@ if ($text) {
             $Surname = $row['Surname'];
             $CustomerID = $row['CustomerID'];
           }
-          $replyText["text"] = "สวัสดีคุณ $Name $Surname (#$CustomerID)";
+          $flexDataJson = '{
+            type: "bubble",
+            body: {
+              type: "box",
+              layout: "vertical",
+              contents: [
+                {
+                  type: "text",
+                  text: `${company}`,
+                  color: "#1DB446",
+                  size: "md",
+                  weight: "bold",
+                },
+                {
+                  type: "text",
+                  text: `ตำแหน่ง : ${department}`,
+                  weight: "bold",
+                  size: "xl",
+                  margin: "md",
+                },
+                {
+                  type: "text",
+                  text: `คุณ ${name}`,
+                  size: "sm",
+                  color: "#555555",
+                  wrap: true,
+                  margin: "sm",
+                },
+                {
+                  type: "text",
+                  text: `รหัสพนักงาน : ${id}`,
+                  size: "sm",
+                  color: "#555555",
+                  wrap: true,
+                  margin: "sm",
+                },
+                {
+                  type: "separator",
+                  margin: "xxl",
+                },
+                {
+                  type: "box",
+                  layout: "vertical",
+                  margin: "xxl",
+                  spacing: "sm",
+                  contents: [
+                    {
+                      type: "box",
+                      layout: "horizontal",
+                      contents: [
+                        {
+                          type: "text",
+                          text: "เงินเดือน",
+                          size: "md",
+                          color: "#777777",
+                          flex: 0,
+                        },
+                        {
+                          type: "text",
+                          text: `${numberToStringCurrency(salary)} บาท`,
+                          size: "md",
+                          color: "#777777",
+                          align: "end",
+                        },
+                      ],
+                    },
+                    {
+                      type: "box",
+                      layout: "horizontal",
+                      contents: [
+                        {
+                          type: "text",
+                          text: "โอที",
+                          size: "md",
+                          color: "#777777",
+                          flex: 0,
+                        },
+                        {
+                          type: "text",
+                          text: `${numberToStringCurrency(ot)} บาท`,
+                          size: "md",
+                          color: "#777777",
+                          align: "end",
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: "separator",
+                  margin: "xxl",
+                },
+                {
+                  type: "box",
+                  layout: "horizontal",
+                  margin: "lg",
+                  contents: [
+                    {
+                      type: "text",
+                      text: "รวมเป็นเงิน",
+                      size: "lg",
+                      color: "#555555",
+                      flex: 0,
+                      weight: "bold",
+                    },
+                    {
+                      type: "text",
+                      text: `${numberToStringCurrency(total)} บาท`,
+                      color: "#555555",
+                      size: "lg",
+                      align: "end",
+                      weight: "bold",
+                      style: "normal",
+                    },
+                  ],
+                },
+              ],
+            },
+            styles: {
+              footer: {
+                separator: true,
+              },
+            },
+          }';
         }
         break;
         // case "slips":
@@ -223,21 +210,21 @@ if ($text) {
   }
 }
 
+// $flexDataJsonDecode = json_decode($replyText["text"],true);
+$flexDataJsonDecode = json_decode($flexDataJson, true);
+
 $lineData['URL'] = "https://api.line.me/v2/bot/message/reply";
+// $lineData['URL'] = "https://api.line.me/v2/bot/message/push";
+
 $lineData['AccessToken'] = "QyIKS6V+lZOMRnUG2U9X1SVWzXeJZe+pOHjSwtfQOEkiVFPzNRFm0zvSWjtLyOGnDDCGpQ9dFbR/eZ7iw7mWEGrAVjJ5+8PAxZEsCB2+CNPp10pjrVjwbKeRzC5aMEKfl1kGJlr4nguXsoVVhMGfaQdB04t89/1O/w1cDnyilFU=";
 
 $replyJson["replyToken"] = $replyToken;
-$replyJson["messages"][0] = $replyText;
+$replyJson["to"] = $userID;
+$replyJson["messages"][] = $replyText;
+// $replyJson["messages"][] = $flexDataJsonDecode;
 
 $encodeJson = json_encode($replyJson);
 
 $results = sendMessage($encodeJson, $lineData);
 echo $results;
 http_response_code(200);
-
-// --Credit--
-// Medium: https://medium.com/@sirateek
-// Github: https://github.com/maiyarapkung
-// Develop with /\/\ By: Siratee K.
-//              \  /
-//               \/

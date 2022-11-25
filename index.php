@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once('LineLogin.php');
+require ('connect.php');
+require ('LineLogin.php');
 
 $servername = "localhost";
 $username = "root";
