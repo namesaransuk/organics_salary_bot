@@ -68,6 +68,7 @@ class LineLogin
         $ret = array(
             'access_token' => $token->access_token,
             'refresh_token' => $token->refresh_token,
+            'sub' => '',
             'name' => '',
             'picture' => '',
             'email' => ''
@@ -75,6 +76,9 @@ class LineLogin
 
         if (count($payload) == 3) {
             $data = json_decode(base64_decode($payload[1]));
+            if (isset($data->sub))
+                $ret['sub'] = $data->sub;
+
             if (isset($data->name))
                 $ret['name'] = $data->name;
 

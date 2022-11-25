@@ -8,12 +8,138 @@
 
 
 $LINEData = file_get_contents('php://input');
+$flexDataJson = '{
+  type: "bubble",
+  body: {
+    type: "box",
+    layout: "vertical",
+    contents: [
+      {
+        type: "text",
+        text: `${company}`,
+        color: "#1DB446",
+        size: "md",
+        weight: "bold",
+      },
+      {
+        type: "text",
+        text: `ตำแหน่ง : ${department}`,
+        weight: "bold",
+        size: "xl",
+        margin: "md",
+      },
+      {
+        type: "text",
+        text: `คุณ ${name}`,
+        size: "sm",
+        color: "#555555",
+        wrap: true,
+        margin: "sm",
+      },
+      {
+        type: "text",
+        text: `รหัสพนักงาน : ${id}`,
+        size: "sm",
+        color: "#555555",
+        wrap: true,
+        margin: "sm",
+      },
+      {
+        type: "separator",
+        margin: "xxl",
+      },
+      {
+        type: "box",
+        layout: "vertical",
+        margin: "xxl",
+        spacing: "sm",
+        contents: [
+          {
+            type: "box",
+            layout: "horizontal",
+            contents: [
+              {
+                type: "text",
+                text: "เงินเดือน",
+                size: "md",
+                color: "#777777",
+                flex: 0,
+              },
+              {
+                type: "text",
+                text: `${numberToStringCurrency(salary)} บาท`,
+                size: "md",
+                color: "#777777",
+                align: "end",
+              },
+            ],
+          },
+          {
+            type: "box",
+            layout: "horizontal",
+            contents: [
+              {
+                type: "text",
+                text: "โอที",
+                size: "md",
+                color: "#777777",
+                flex: 0,
+              },
+              {
+                type: "text",
+                text: `${numberToStringCurrency(ot)} บาท`,
+                size: "md",
+                color: "#777777",
+                align: "end",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: "separator",
+        margin: "xxl",
+      },
+      {
+        type: "box",
+        layout: "horizontal",
+        margin: "lg",
+        contents: [
+          {
+            type: "text",
+            text: "รวมเป็นเงิน",
+            size: "lg",
+            color: "#555555",
+            flex: 0,
+            weight: "bold",
+          },
+          {
+            type: "text",
+            text: `${numberToStringCurrency(total)} บาท`,
+            color: "#555555",
+            size: "lg",
+            align: "end",
+            weight: "bold",
+            style: "normal",
+          },
+        ],
+      },
+    ],
+  },
+  styles: {
+    footer: {
+      separator: true,
+    },
+  },
+};';
 $jsonData = json_decode($LINEData, true);
 
 $replyToken = $jsonData["events"][0]["replyToken"];
 $userID = $jsonData["events"][0]["source"]["userId"];
 $text = $jsonData["events"][0]["message"]["text"];
 $timestamp = $jsonData["events"][0]["timestamp"];
+
+// $flexDataJsonDeCode = ["contents"]["contents"][0]["header"]["contents"][0]["text"];
 
 // $servername = "https://d588-184-82-148-66.ap.ngrok.io/phpmyadmin/";
 $servername = "localhost";
@@ -89,8 +215,8 @@ if ($text) {
           $replyText["text"] = "สวัสดีคุณ $Name $Surname (#$CustomerID)";
         }
         break;
-      // case "slips":
-      //   break;
+        // case "slips":
+        //   break;
       default:
         $replyText["text"] = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse tenetur molestias, nam rem maxime facilis perferendis saepe culpa assumenda, facere voluptatem nisi nobis id eum error delectus necessitatibus at minima!";
     }
