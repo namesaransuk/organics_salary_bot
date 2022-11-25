@@ -50,21 +50,18 @@ function sendMessage($replyJson, $sendInfo)
 
 $mysql->query("INSERT INTO `LOG`(`UserID`, `Text`, `Timestamp`) VALUES ('$userID','$text','$timestamp')");
 
-// INSERT INTO `customer` (`UserID`, `CustomerID`, `Name`, `Surname`) VALUES ('U7d6ab1d8497e4a799721a05c0f0458d3', 'IT0231', 'Saransuk', 'Yimyong');
-
 $replyText["type"] = "text";
 if ($text) {
   $messageFromUser = trim($text);
   $checkRegister = explode("รหัส:", $messageFromUser);
   $needToRegister = $checkRegister && $checkRegister[1];
+  $idForRegister = $checkRegister[1];
+  $getUser = $mysql->query("SELECT * FROM `Customer` WHERE `UserID`='$userID'");
+  $getUserNum = $getUser->num_rows;
+  $getCustomer = $mysql->query("SELECT * FROM `Customer` WHERE `CustomerID`='$idForRegister'");
+  $getCustomerNum = $getCustomer->num_rows;
 
   if ($needToRegister) {
-    $idForRegister = $checkRegister[1];
-    $getUser = $mysql->query("SELECT * FROM `Customer` WHERE `UserID`='$userID'");
-    $getUserNum = $getUser->num_rows;
-    $getCustomer = $mysql->query("SELECT * FROM `Customer` WHERE `CustomerID`='$idForRegister'");
-    $getCustomerNum = $getCustomer->num_rows;
-
     if ($getUserNum < 1) {
       if ($getCustomerNum < 1) {
         $replyText["text"] = "รหัสพนักงานไม่ตรงกับที่มีในระบบ กรุณาลงทะเบียนใหม่อีกครั้ง";
@@ -92,8 +89,8 @@ if ($text) {
           $replyText["text"] = "สวัสดีคุณ $Name $Surname (#$CustomerID)";
         }
         break;
-      case "slips":
-        break;
+      // case "slips":
+      //   break;
       default:
         $replyText["text"] = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse tenetur molestias, nam rem maxime facilis perferendis saepe culpa assumenda, facere voluptatem nisi nobis id eum error delectus necessitatibus at minima!";
     }
