@@ -27,11 +27,11 @@ function sendMessage($encodeJson, $lineData)
     array(
       // 'Content-Type: application/json',
       // 'Authorization: Bearer ' . $lineData["AccessToken"]
-      "authorization: Bearer " . $lineData['AccessToken'],
+      "Authorization: Bearer " . $lineData['AccessToken'],
       "cache-control: no-cache",
-      "content-type: application/json; charset=UTF-8",
+      "Content-Type: application/json; charset=UTF-8",
     ),
-    
+
   ));
   $result = curl_exec($ch);
   curl_close($ch);
@@ -77,128 +77,185 @@ if ($text) {
             $CustomerID = $row['CustomerID'];
           }
           $flexDataJson = '{
-            type: "bubble",
-            body: {
-              type: "box",
-              layout: "vertical",
-              contents: [
+            "type": "flex",
+            "altText": "Flex Message",
+            "contents": {
+              "type": "carousel",
+              "contents": [
                 {
-                  type: "text",
-                  text: `${company}`,
-                  color: "#1DB446",
-                  size: "md",
-                  weight: "bold",
-                },
-                {
-                  type: "text",
-                  text: `ตำแหน่ง : ${department}`,
-                  weight: "bold",
-                  size: "xl",
-                  margin: "md",
-                },
-                {
-                  type: "text",
-                  text: `คุณ ${name}`,
-                  size: "sm",
-                  color: "#555555",
-                  wrap: true,
-                  margin: "sm",
-                },
-                {
-                  type: "text",
-                  text: `รหัสพนักงาน : ${id}`,
-                  size: "sm",
-                  color: "#555555",
-                  wrap: true,
-                  margin: "sm",
-                },
-                {
-                  type: "separator",
-                  margin: "xxl",
-                },
-                {
-                  type: "box",
-                  layout: "vertical",
-                  margin: "xxl",
-                  spacing: "sm",
-                  contents: [
-                    {
-                      type: "box",
-                      layout: "horizontal",
-                      contents: [
-                        {
-                          type: "text",
-                          text: "เงินเดือน",
-                          size: "md",
-                          color: "#777777",
-                          flex: 0,
+                  "type": "bubble",
+                  "hero": {
+                    "type": "image",
+                    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
+                    "size": "full",
+                    "aspectRatio": "20:13",
+                    "aspectMode": "cover"
+                  },
+                  "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                      {
+                        "type": "text",
+                        "text": "'.$Name.'",
+                        "size": "xl",
+                        "weight": "bold",
+                        "wrap": true
+                      },
+                      {
+                        "type": "box",
+                        "layout": "baseline",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "$49",
+                            "flex": 0,
+                            "size": "xl",
+                            "weight": "bold",
+                            "wrap": true
+                          },
+                          {
+                            "type": "text",
+                            "text": ".99",
+                            "flex": 0,
+                            "size": "sm",
+                            "weight": "bold",
+                            "wrap": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "action": {
+                          "type": "uri",
+                          "label": "Add to Cart",
+                          "uri": "https://linecorp.com"
                         },
-                        {
-                          type: "text",
-                          text: `${numberToStringCurrency(salary)} บาท`,
-                          size: "md",
-                          color: "#777777",
-                          align: "end",
-                        },
-                      ],
-                    },
-                    {
-                      type: "box",
-                      layout: "horizontal",
-                      contents: [
-                        {
-                          type: "text",
-                          text: "โอที",
-                          size: "md",
-                          color: "#777777",
-                          flex: 0,
-                        },
-                        {
-                          type: "text",
-                          text: `${numberToStringCurrency(ot)} บาท`,
-                          size: "md",
-                          color: "#777777",
-                          align: "end",
-                        },
-                      ],
-                    },
-                  ],
+                        "style": "primary"
+                      },
+                      {
+                        "type": "button",
+                        "action": {
+                          "type": "uri",
+                          "label": "Add to whishlist",
+                          "uri": "https://linecorp.com"
+                        }
+                      }
+                    ]
+                  }
                 },
                 {
-                  type: "separator",
-                  margin: "xxl",
+                  "type": "bubble",
+                  "hero": {
+                    "type": "image",
+                    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_6_carousel.png",
+                    "size": "full",
+                    "aspectRatio": "20:13",
+                    "aspectMode": "cover"
+                  },
+                  "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                      {
+                        "type": "text",
+                        "text": "Metal Desk Lamp",
+                        "size": "xl",
+                        "weight": "bold",
+                        "wrap": true
+                      },
+                      {
+                        "type": "box",
+                        "layout": "baseline",
+                        "flex": 1,
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "$11",
+                            "flex": 0,
+                            "size": "xl",
+                            "weight": "bold",
+                            "wrap": true
+                          },
+                          {
+                            "type": "text",
+                            "text": ".99",
+                            "flex": 0,
+                            "size": "sm",
+                            "weight": "bold",
+                            "wrap": true
+                          }
+                        ]
+                      },
+                      {
+                        "type": "text",
+                        "text": "Temporarily out of stock",
+                        "flex": 0,
+                        "margin": "md",
+                        "size": "xxs",
+                        "color": "#FF5551",
+                        "wrap": true
+                      }
+                    ]
+                  },
+                  "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "action": {
+                          "type": "uri",
+                          "label": "Add to Cart",
+                          "uri": "https://linecorp.com"
+                        },
+                        "flex": 2,
+                        "color": "#AAAAAA",
+                        "style": "primary"
+                      },
+                      {
+                        "type": "button",
+                        "action": {
+                          "type": "uri",
+                          "label": "Add to wish list",
+                          "uri": "https://linecorp.com"
+                        }
+                      }
+                    ]
+                  }
                 },
                 {
-                  type: "box",
-                  layout: "horizontal",
-                  margin: "lg",
-                  contents: [
-                    {
-                      type: "text",
-                      text: "รวมเป็นเงิน",
-                      size: "lg",
-                      color: "#555555",
-                      flex: 0,
-                      weight: "bold",
-                    },
-                    {
-                      type: "text",
-                      text: `${numberToStringCurrency(total)} บาท`,
-                      color: "#555555",
-                      size: "lg",
-                      align: "end",
-                      weight: "bold",
-                      style: "normal",
-                    },
-                  ],
-                },
-              ],
-            },
-            styles: {
-              footer: {
-                separator: true,
-              },
-            },
+                  "type": "bubble",
+                  "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "action": {
+                          "type": "uri",
+                          "label": "See more",
+                          "uri": "https://linecorp.com"
+                        },
+                        "flex": 1,
+                        "gravity": "center"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
           }';
         }
         break;
@@ -210,19 +267,21 @@ if ($text) {
   }
 }
 
-// $flexDataJsonDecode = json_decode($replyText["text"],true);
-$flexDataJsonDecode = json_decode($flexDataJson, true);
 
-$lineData['URL'] = "https://api.line.me/v2/bot/message/reply";
-// $lineData['URL'] = "https://api.line.me/v2/bot/message/push";
 
+// $lineData['URL'] = "https://api.line.me/v2/bot/message/reply";
+$lineData['URL'] = "https://api.line.me/v2/bot/message/push";
 $lineData['AccessToken'] = "QyIKS6V+lZOMRnUG2U9X1SVWzXeJZe+pOHjSwtfQOEkiVFPzNRFm0zvSWjtLyOGnDDCGpQ9dFbR/eZ7iw7mWEGrAVjJ5+8PAxZEsCB2+CNPp10pjrVjwbKeRzC5aMEKfl1kGJlr4nguXsoVVhMGfaQdB04t89/1O/w1cDnyilFU=";
 
 $replyJson["replyToken"] = $replyToken;
 $replyJson["to"] = $userID;
-$replyJson["messages"][] = $replyText;
-// $replyJson["messages"][] = $flexDataJsonDecode;
 
+if (isset($flexDataJson)) {
+  $flexDataJsonDecode = json_decode($flexDataJson, true);
+  $replyJson["messages"][] = $flexDataJsonDecode;
+} else if ($replyText["text"]) {
+  $replyJson["messages"][] = $replyText;
+}
 $encodeJson = json_encode($replyJson);
 
 $results = sendMessage($encodeJson, $lineData);
