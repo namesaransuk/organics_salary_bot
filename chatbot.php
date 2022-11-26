@@ -1,5 +1,6 @@
 <?php
 require('connect.php');
+require('sendMessage.php');
 
 $LINEData = file_get_contents('php://input');
 $jsonData = json_decode($LINEData, true);
@@ -9,35 +10,6 @@ $userID = $jsonData["events"][0]["source"]["userId"];
 $text = $jsonData["events"][0]["message"]["text"];
 $timestamp = $jsonData["events"][0]["timestamp"];
 
-function sendMessage($encodeJson, $lineData)
-{
-  $ch = curl_init();
-  curl_setopt_array($ch, array(
-    CURLOPT_URL => $lineData["URL"],
-    CURLINFO_HEADER_OUT => true,
-    CURLOPT_POST => true,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_ENCODING => "",
-    CURLOPT_MAXREDIRS => 10,
-    CURLOPT_TIMEOUT => 30,
-    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    CURLOPT_CUSTOMREQUEST => "POST",
-    CURLOPT_POSTFIELDS => $encodeJson,
-    CURLOPT_HTTPHEADER =>
-    array(
-      // 'Content-Type: application/json',
-      // 'Authorization: Bearer ' . $lineData["AccessToken"]
-      "Authorization: Bearer " . $lineData['AccessToken'],
-      "cache-control: no-cache",
-      "Content-Type: application/json; charset=UTF-8",
-    ),
-
-  ));
-  $result = curl_exec($ch);
-  curl_close($ch);
-  return $result;
-}
-
 $mysql->query("INSERT INTO `LOG`(`UserID`, `Text`, `Timestamp`) VALUES ('$userID','$text','$timestamp')");
 
 $replyText["type"] = "text";
@@ -46,6 +18,7 @@ if ($text) {
   $checkRegister = explode("รหัส:", $messageFromUser);
   $needToRegister = $checkRegister && $checkRegister[1];
   $idForRegister = $checkRegister[1];
+
   $getUser = $mysql->query("SELECT * FROM `Customer` WHERE `UserID`='$userID'");
   $getUserNum = $getUser->num_rows;
   $getCustomer = $mysql->query("SELECT * FROM `Customer` WHERE `CustomerID`='$idForRegister'");
@@ -65,7 +38,11 @@ if ($text) {
   } else {
     switch ($messageFromUser) {
       case "register":
-        $replyText["text"] = 'กรุณากรอกรหัสพนักงาน เช่น "รหัส:OGN0123"';
+        if ($getUserNum < 1) {
+          $replyText["text"] = 'กรุณากรอกรหัสพนักงาน เช่น "รหัส:OGN0123"';
+        } else {
+          $replyText["text"] = 'ไม่สามารถลงทะเบียนซ้ำได้';
+        }
         break;
       case "salary":
         if ($getUserNum < 1) {
@@ -75,192 +52,131 @@ if ($text) {
             $Name = $row['Name'];
             $Surname = $row['Surname'];
             $CustomerID = $row['CustomerID'];
+            $Role = $row['Role'];
+            $Salary = $row['Salary'];
+            $OT = $row['OT'];
           }
           $flexDataJson = '{
             "type": "flex",
             "altText": "Flex Message",
             "contents": {
-              "type": "carousel",
-              "contents": [
-                {
-                  "type": "bubble",
-                  "hero": {
-                    "type": "image",
-                    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_5_carousel.png",
-                    "size": "full",
-                    "aspectRatio": "20:13",
-                    "aspectMode": "cover"
+              "type": "bubble",
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "Organics Legendary",
+                    "weight": "bold",
+                    "size": "md",
+                    "color": "#1DB446"
                   },
-                  "body": {
+                  {
                     "type": "box",
                     "layout": "vertical",
-                    "spacing": "sm",
                     "contents": [
                       {
                         "type": "text",
-                        "text": "'.$Name.'",
-                        "size": "xl",
-                        "weight": "bold",
-                        "wrap": true
-                      },
-                      {
-                        "type": "box",
-                        "layout": "baseline",
-                        "contents": [
-                          {
-                            "type": "text",
-                            "text": "$49",
-                            "flex": 0,
-                            "size": "xl",
-                            "weight": "bold",
-                            "wrap": true
-                          },
-                          {
-                            "type": "text",
-                            "text": ".99",
-                            "flex": 0,
-                            "size": "sm",
-                            "weight": "bold",
-                            "wrap": true
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "footer": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "spacing": "sm",
-                    "contents": [
-                      {
-                        "type": "button",
-                        "action": {
-                          "type": "uri",
-                          "label": "Add to Cart",
-                          "uri": "https://linecorp.com"
-                        },
-                        "style": "primary"
-                      },
-                      {
-                        "type": "button",
-                        "action": {
-                          "type": "uri",
-                          "label": "Add to whishlist",
-                          "uri": "https://linecorp.com"
-                        }
-                      }
-                    ]
-                  }
-                },
-                {
-                  "type": "bubble",
-                  "hero": {
-                    "type": "image",
-                    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_6_carousel.png",
-                    "size": "full",
-                    "aspectRatio": "20:13",
-                    "aspectMode": "cover"
-                  },
-                  "body": {
-                    "type": "box",
-                    "layout": "vertical",
-                    "spacing": "sm",
-                    "contents": [
-                      {
-                        "type": "text",
-                        "text": "Metal Desk Lamp",
-                        "size": "xl",
-                        "weight": "bold",
-                        "wrap": true
-                      },
-                      {
-                        "type": "box",
-                        "layout": "baseline",
-                        "flex": 1,
-                        "contents": [
-                          {
-                            "type": "text",
-                            "text": "$11",
-                            "flex": 0,
-                            "size": "xl",
-                            "weight": "bold",
-                            "wrap": true
-                          },
-                          {
-                            "type": "text",
-                            "text": ".99",
-                            "flex": 0,
-                            "size": "sm",
-                            "weight": "bold",
-                            "wrap": true
-                          }
-                        ]
-                      },
-                      {
-                        "type": "text",
-                        "text": "Temporarily out of stock",
-                        "flex": 0,
+                        "text": "ตำแหน่ง : ' . $Role . ' ",
                         "margin": "md",
-                        "size": "xxs",
-                        "color": "#FF5551",
-                        "wrap": true
+                        "size": "xl",
+                        "weight": "bold"
+                      },
+                      {
+                        "type": "text",
+                        "text": "ชื่อ : ' . $Name . ' ' . $Surname . '",
+                        "margin": "md"
+                      },
+                      {
+                        "type": "text",
+                        "text": "รหัสพนักงาน : ' . $CustomerID . '"
                       }
                     ]
                   },
-                  "footer": {
+                  {
+                    "type": "separator",
+                    "margin": "xl"
+                  },
+                  {
                     "type": "box",
                     "layout": "vertical",
-                    "spacing": "sm",
                     "contents": [
                       {
-                        "type": "button",
-                        "action": {
-                          "type": "uri",
-                          "label": "Add to Cart",
-                          "uri": "https://linecorp.com"
-                        },
-                        "flex": 2,
-                        "color": "#AAAAAA",
-                        "style": "primary"
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "เงินเดือน",
+                            "color": "#777777",
+                            "size": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "text": "' . number_format($Salary) . ' บาท",
+                            "align": "end",
+                            "color": "#777777",
+                            "size": "sm"
+                          }
+                        ]
                       },
                       {
-                        "type": "button",
-                        "action": {
-                          "type": "uri",
-                          "label": "Add to wish list",
-                          "uri": "https://linecorp.com"
-                        }
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "โอที",
+                            "color": "#777777",
+                            "size": "sm"
+                          },
+                          {
+                            "type": "text",
+                            "text": "' . number_format($OT) . ' บาท",
+                            "align": "end",
+                            "color": "#777777",
+                            "size": "sm"
+                          }
+                        ]
                       }
-                    ]
-                  }
-                },
-                {
-                  "type": "bubble",
-                  "body": {
+                    ],
+                    "margin": "xl"
+                  },
+                  {
+                    "type": "separator",
+                    "margin": "xl"
+                  },
+                  {
                     "type": "box",
                     "layout": "vertical",
-                    "spacing": "sm",
                     "contents": [
                       {
-                        "type": "button",
-                        "action": {
-                          "type": "uri",
-                          "label": "See more",
-                          "uri": "https://linecorp.com"
-                        },
-                        "flex": 1,
-                        "gravity": "center"
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "รวมเป็นเงิน",
+                            "weight": "bold"
+                          },
+                          {
+                            "type": "text",
+                            "text": "' . number_format($Salary + $OT) . ' บาท",
+                            "align": "end",
+                            "weight": "bold"
+                          }
+                        ]
                       }
-                    ]
+                    ],
+                    "margin": "xl"
                   }
-                }
-              ]
+                ]
+              }
             }
           }';
         }
         break;
-        // case "slips":
-        //   break;
       default:
         $replyText["text"] = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse tenetur molestias, nam rem maxime facilis perferendis saepe culpa assumenda, facere voluptatem nisi nobis id eum error delectus necessitatibus at minima!";
     }
@@ -276,7 +192,7 @@ $lineData['AccessToken'] = "QyIKS6V+lZOMRnUG2U9X1SVWzXeJZe+pOHjSwtfQOEkiVFPzNRFm
 $replyJson["replyToken"] = $replyToken;
 $replyJson["to"] = $userID;
 
-if (isset($flexDataJson)) {
+if ($flexDataJson) {
   $flexDataJsonDecode = json_decode($flexDataJson, true);
   $replyJson["messages"][] = $flexDataJsonDecode;
 } else if ($replyText["text"]) {

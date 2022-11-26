@@ -4,7 +4,7 @@ class LineLogin
     #### change your id
     private const CLIENT_ID = '1657682438';
     private const CLIENT_SECRET = '134b7a8096bf3853a66c5b1280d0959a';
-    private const REDIRECT_URL = 'https://c933-1-46-65-91.ap.ngrok.io/organics_salary_bot/callback.php';
+    private const REDIRECT_URL = 'https://4d68-184-82-151-246.ap.ngrok.io/organics_salary_bot/callback.php';
 
     private const AUTH_URL = 'https://access.line.me/oauth2/v2.1/authorize';
     private const PROFILE_URL = 'https://api.line.me/v2/profile';

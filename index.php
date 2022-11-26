@@ -1,18 +1,10 @@
 <?php
 session_start();
-require ('connect.php');
-require ('LineLogin.php');
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "LINE";
-$mysql = new mysqli($servername, $username, $password, $dbname);
-mysqli_set_charset($mysql, "utf8");
+require('connect.php');
+require('LineLogin.php');
 
 if (isset($_SESSION['profile'])) {
     $profile = $_SESSION['profile'];
-    echo '<img src="', $profile->picture, '/large">';
 
     $chkUser = $mysql->query("SELECT * FROM `Customer` WHERE `UserID`='$profile->sub'");
     $chkUserNum = $chkUser->num_rows;
@@ -21,16 +13,18 @@ if (isset($_SESSION['profile'])) {
             $Name = $row['Name'];
             $Surname = $row['Surname'];
             $CustomerID = $row['CustomerID'];
+            $Role = $row['Role'];
+            $Salary = $row['Salary'];
+            $OT = $row['OT'];
         }
-        echo '<a href="', $link, '">คลิกเพื่อดูสลิปเงินเดือน ' . $Name . '</a>';
+        require('profile.php');
     } else {
-        echo '<a href="', $link, '">ไม่มี</a>';
+        require('not-found.html');
     }
 
-    echo '<p>User ID: ', $profile->sub, '</p>';
-    echo '<p>Name: ', $profile->name, '</p>';
-    echo '<p>Email: ', $profile->email, '</p>';
-    echo '<a href="logout.php">Logout</a>';
+    // echo '<p>User ID: ', $profile->sub, '</p>';
+    // echo '<p>Name: ', $profile->name, '</p>';
+    // echo '<p>Email: ', $profile->email, '</p>';
 } else {
     $line = new LineLogin();
     $link = $line->getLink();
