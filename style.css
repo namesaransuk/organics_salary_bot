@@ -72,7 +72,7 @@ body {
 .card-profile_visual {
   /* height: 68%; */
   width: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
   background: linear-gradient(to bottom, #3b3c3f, #263d85, #172551);
   border-top-left-radius: 10px;
@@ -109,8 +109,7 @@ body {
   right: 0;
   margin: auto;
   top: calc(68% - 100px);
-  color: #fff;
-  text-shadow: 0 1px #000000a8;
+  color: white;
   text-align: center;
 }
 
@@ -147,6 +146,51 @@ body {
   top: 0;
 }
 
+/* not found */
+.card-profile_user-infos_p {
+  z-index: 3;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: calc(68% - 100px);
+  color: white;
+  text-align: center;
+}
+
+.card-profile .infos_p {
+  display: block;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 22px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 3px solid #588157;
+  width: 50%;
+}
+
+.card-profile_user-infos_p .infos_name_p,
+.card-profile_user-infos_p .infos_nick_p {
+  display: block;
+  clear: both;
+  padding: 0.5em 0;
+  padding-top: 0;
+  /* position: absolute; */
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  top: 8px;
+  font-weight: 600;
+  color: #000;
+}
+
+.card-profile_user-infos_p .infos_nick_p {
+  top: 32px;
+  font-size: 14px;
+  font-weight: 300;
+}
+/* not found */
+
 .card-profile_user-infos .infos_name,
 .card-profile_user-infos .infos_nick {
   display: block;
@@ -158,7 +202,8 @@ body {
   text-align: center;
   font-size: 18px;
   top: 8px;
-  font-weight: 800;
+  font-weight: 600;
+  color: #000;
 }
 
 .card-profile_user-infos .infos_nick {
@@ -224,10 +269,13 @@ body {
   transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
   box-shadow: 0 2px 25px rgba(52, 78, 65, 0.5);
 }
+
 .bubbly-button:focus {
   outline: 0;
 }
-.bubbly-button:before, .bubbly-button:after {
+
+.bubbly-button:before,
+.bubbly-button:after {
   position: absolute;
   content: "";
   display: block;
@@ -238,27 +286,32 @@ body {
   transition: all ease-in-out 0.5s;
   background-repeat: no-repeat;
 }
+
 .bubbly-button:before {
   display: none;
   top: -75%;
   background-image: radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, transparent 20%, #588157 20%, transparent 30%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, transparent 10%, #588157 15%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%);
   background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
 }
+
 .bubbly-button:after {
   display: none;
   bottom: -75%;
   background-image: radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, transparent 10%, #588157 15%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%), radial-gradient(circle, #588157 20%, transparent 20%);
   background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
 }
+
 .bubbly-button:active {
   transform: scale(0.9);
   background-color: #476947;
   box-shadow: 0 2px 25px rgba(65, 97, 81, 0.2);
 }
+
 .bubbly-button.animate:before {
   display: block;
   animation: topBubbles ease-in-out 0.75s forwards;
 }
+
 .bubbly-button.animate:after {
   display: block;
   animation: bottomBubbles ease-in-out 0.75s forwards;
@@ -268,21 +321,26 @@ body {
   0% {
     background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%, 70% 90%;
   }
+
   50% {
     background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%, 50% 50%, 65% 20%, 90% 30%;
   }
+
   100% {
     background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%, 50% 40%, 65% 10%, 90% 20%;
     background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
   }
 }
+
 @keyframes bottomBubbles {
   0% {
     background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%;
   }
+
   50% {
     background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%;
   }
+
   100% {
     background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
     background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;

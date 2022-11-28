@@ -7,6 +7,7 @@ if (isset($_SESSION['profile'])) {
     $profile = $_SESSION['profile'];
 
     $chkUser = $mysql->query("SELECT * FROM `Customer` WHERE `UserID`='$profile->sub'");
+    $mysql->query("UPDATE `customer` SET `Picture`='$profile->picture' WHERE `UserID`='$profile->sub'");
     $chkUserNum = $chkUser->num_rows;
     if ($chkUserNum > 0) {
         while ($row = $chkUser->fetch_assoc()) {
@@ -28,5 +29,9 @@ if (isset($_SESSION['profile'])) {
 } else {
     $line = new LineLogin();
     $link = $line->getLink();
-    echo '<a href="', $link, '">Login</a>';
+    echo '
+    <div>
+        <a href="', $link, '"><img src="11111.png" style="display: block;margin-top: 100px;margin-left: auto;margin-right: auto;"/></a>
+    </div>
+    ';
 }

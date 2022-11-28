@@ -183,8 +183,6 @@ if ($text) {
   }
 }
 
-
-
 // $lineData['URL'] = "https://api.line.me/v2/bot/message/reply";
 $lineData['URL'] = "https://api.line.me/v2/bot/message/push";
 $lineData['AccessToken'] = "QyIKS6V+lZOMRnUG2U9X1SVWzXeJZe+pOHjSwtfQOEkiVFPzNRFm0zvSWjtLyOGnDDCGpQ9dFbR/eZ7iw7mWEGrAVjJ5+8PAxZEsCB2+CNPp10pjrVjwbKeRzC5aMEKfl1kGJlr4nguXsoVVhMGfaQdB04t89/1O/w1cDnyilFU=";
@@ -198,6 +196,7 @@ if ($flexDataJson) {
 } else if ($replyText["text"]) {
   $replyJson["messages"][] = $replyText;
 }
+
 $encodeJson = json_encode($replyJson);
 
 $results = sendMessage($encodeJson, $lineData);
