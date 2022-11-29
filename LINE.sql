@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2022 at 10:21 AM
+-- Generation Time: Nov 29, 2022 at 08:40 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -28,24 +28,26 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `customer` (
-  `UserID` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `UserID` text CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `CustomerID` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Name` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Surname` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Role` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `Salary` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `OT` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
+  `OT` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `Picture` text CHARACTER SET utf8 DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`UserID`, `CustomerID`, `Name`, `Surname`, `Role`, `Salary`, `OT`) VALUES
-('U1efbc797c7174dd636c047f5ca8eba42', '123ABCD', 'กวนซ้น', 'แซ่เตียน', '', '', ''),
-('', 'DJ0001', 'DR.JEL', 'Pannawit', 'Supervisor', '1000000', '999999'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'IT0231', 'นายศรัณย์สุข', 'ยิ้มย่อง', 'Developer', '13000', '7000'),
-('', 'SN1414', 'กุลสตรี', 'แตงโสภา', 'In my heart', '141414', '1414');
+INSERT INTO `customer` (`id`, `UserID`, `CustomerID`, `Name`, `Surname`, `Role`, `Salary`, `OT`, `Picture`) VALUES
+(1, '', 'DJ0001', 'DR.JEL', 'Pannawit', 'Supervisor', '1000000', '999999', ''),
+(2, 'U7d6ab1d8497e4a799721a05c0f0458d3', 'IT0231', 'นายศรัณย์สุข', 'ยิ้มย่อง', 'Programmer', '15000', '7000', 'https://profile.line-scdn.net/0he-9_oh7YOgIEJi97xdBFVThjNG9zCDxKfEAgZXMiMzovRXVdO0YiMHEhYDErQigBMRAlMSckMGYh'),
+(3, NULL, 'SN11405', 'aszas', 'fdree', 'Developer', '20000', '1000', NULL),
+(4, '', 'SN1414', 'กุลสตรี', 'แตงโสภา', 'In my heart', '141414', '1414', '');
 
 -- --------------------------------------------------------
 
@@ -64,18 +66,7 @@ CREATE TABLE `log` (
 --
 
 INSERT INTO `log` (`UserID`, `Text`, `Timestamp`) VALUES
-('U1efbc797c7174dd636c047f5ca8eba42', 'สวัสดีครับ', '1564327729309'),
-('U1efbc797c7174dd636c047f5ca8eba42', 'ทพสอบ', '1564327735236'),
-('U1efbc797c7174dd636c047f5ca8eba42', 'Hello 1234', '1564327738324'),
-('U1efbc797c7174dd636c047f5ca8eba42', 'สวัสดีครับ', '1564327924023'),
-('U1efbc797c7174dd636c047f5ca8eba42', 'Yo', '1564328241209'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'salary', '1669452462345'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'register', '1669452464409'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'register', '1669452489778'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'รหัส:IT0231', '1669452494184'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'salary', '1669452500984'),
-('U7d6ab1d8497e4a799721a05c0f0458d3', 'salary', '1669452558365'),
-('Ub73170dfc953cda9cfc254ec2d8aafc6', 'register', '1669453110684');
+('U1efbc797c7174dd636c047f5ca8eba42', 'สวัสดีครับ', '1564327729309');
 
 --
 -- Indexes for dumped tables
@@ -85,13 +76,17 @@ INSERT INTO `log` (`UserID`, `Text`, `Timestamp`) VALUES
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`CustomerID`(5));
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `log`
+-- AUTO_INCREMENT for dumped tables
 --
-ALTER TABLE `log`
-  ADD PRIMARY KEY (`Timestamp`(15));
+
+--
+-- AUTO_INCREMENT for table `customer`
+--
+ALTER TABLE `customer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
