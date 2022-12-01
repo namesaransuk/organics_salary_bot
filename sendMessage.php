@@ -16,8 +16,6 @@ function sendMessage($encodeJson, $lineData)
     CURLOPT_POSTFIELDS => $encodeJson,
     CURLOPT_HTTPHEADER =>
     array(
-      // 'Content-Type: application/json',
-      // 'Authorization: Bearer ' . $lineData["AccessToken"]
       "Authorization: Bearer " . $lineData['AccessToken'],
       "cache-control: no-cache",
       "Content-Type: application/json; charset=UTF-8",
