@@ -1,16 +1,137 @@
 <?php
 require('connect.php');
 require('sendMessage.php');
+require __DIR__ . '/vendor/autoload.php';
 
 $LINEData = file_get_contents('php://input');
 $jsonData = json_decode($LINEData, true);
+
+file_put_contents('log.txt', file_get_contents('php://input') . PHP_EOL, FILE_APPEND);
 
 $replyToken = $jsonData["events"][0]["replyToken"];
 $userID = $jsonData["events"][0]["source"]["userId"];
 $text = $jsonData["events"][0]["message"]["text"];
 $timestamp = $jsonData["events"][0]["timestamp"];
+$type = $jsonData["events"][0]["type"];
 
 $mysql->query("INSERT INTO `LOG`(`UserID`, `Text`, `Timestamp`) VALUES ('$userID','$text','$timestamp')");
+// ========================================================================
+$token = "QyIKS6V+lZOMRnUG2U9X1SVWzXeJZe+pOHjSwtfQOEkiVFPzNRFm0zvSWjtLyOGnDDCGpQ9dFbR/eZ7iw7mWEGrAVjJ5+8PAxZEsCB2+CNPp10pjrVjwbKeRzC5aMEKfl1kGJlr4nguXsoVVhMGfaQdB04t89/1O/w1cDnyilFU=";
+
+$LINEProfileDatas['url'] = "https://api.line.me/v2/bot/profile/" . $userID;
+$LINEProfileDatas['token'] = $token;
+
+$resultsLineProfile = getLINEProfile($LINEProfileDatas);
+
+$LINEUserProfile = json_decode($resultsLineProfile['message'], true);
+$displayName = $LINEUserProfile['displayName'];
+
+/*
+	 * We need to get a Google_Client object first to handle auth and api calls, etc.
+	 */
+$client = new \Google_Client();
+$client->setApplicationName('Google Sheets API PHP Quickstart');
+$client->setScopes(\Google_Service_Sheets::SPREADSHEETS);
+$client->setAuthConfig(__DIR__ . '/winter-justice-370904-c7ee2dfa471b.json');
+$client->setAccessType('offline');
+// $client->setPrompt('select_account consent');
+
+$service = new \Google_Service_Sheets($client);
+
+$spreadsheetId = "1oRi7Uj2DVUHXBcKHgFhLgk6xWo0yFhmnn5aaAm2MpkU";
+$googleSheet = "salary";
+insertData($spreadsheetId, $service, $displayName);
+updateData($spreadsheetId, $service);
+function insertData($spreadsheetId, $service, $displayName)
+{
+  // $range = 'congress!D2:F1000000';
+  //INSERT DATA
+  $range = 'salary!g2';
+  $values = [
+    [$displayName],
+  ];
+  $body = new Google_Service_Sheets_ValueRange([
+    'values' => $values
+  ]);
+  $params = [
+    'valueInputOption' => 'RAW'
+  ];
+  $insert = [
+    'insertDataOption' => 'INSERT_ROWS'
+  ];
+  $result = $service->spreadsheets_values->append(
+    $spreadsheetId,
+    $range,
+    $body,
+    $params,
+    $insert
+  );
+
+  return $result;
+}
+
+function updateData($spreadsheetId, $service)
+{
+  $range = 'salary!a2:b2';
+  $values = [
+    ["Test", "Test"],
+  ];
+  $body = new Google_Service_Sheets_ValueRange([
+    'values' => $values
+  ]);
+  $params = [
+    'valueInputOption' => 'RAW'
+  ];
+  $result = $service->spreadsheets_values->update(
+    $spreadsheetId,
+    $range,
+    $body,
+    $params
+  );
+}
+
+function getLINEProfile($datas)
+{
+  $datasReturn = [];
+
+  $curl = curl_init();
+
+  curl_setopt_array($curl, array(
+    CURLOPT_URL => $datas['url'],
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "GET",
+    CURLOPT_HTTPHEADER => array(
+      "Authorization: Bearer " . $datas['token'],
+      "Postman-Token: 32d99c7d-9f6e-4413-a4d2-fa0a9f1ecf6d",
+      "cache-control: no-cache"
+    ),
+  ));
+
+  $response = curl_exec($curl);
+  $err = curl_error($curl);
+
+  curl_close($curl);
+
+  if ($err) {
+    $datasReturn['result'] = 'E';
+    $datasReturn['message'] = $err;
+  } else {
+    if ($response == "{}") {
+      $datasReturn['result'] = 'S';
+      $datasReturn['message'] = 'Success';
+    } else {
+      $datasReturn['result'] = 'E';
+      $datasReturn['message'] = $response;
+    }
+  }
+
+  return $datasReturn;
+}
+// ========================================================================
 
 $replyText["type"] = "text";
 if ($text) {
